@@ -1,11 +1,22 @@
 
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { loginScreens } from './screens/LoginScreens';
+import LoginScreen from "../Screens/LoginScreen";
 
 const Stack = createStackNavigator();
 
-function LoginNavigation() {
+function LoginNavigation ({ startApp }) {
+
+    const loginScreens = [
+        {
+            name: 'Login',
+            component: (props) => <LoginScreen {...props} startApp={startApp} />,
+            options: {
+                headerShown: false,
+            },
+        },
+    ];
+
     return (
         <Stack.Navigator>
             {loginScreens.map((screen, index) => (

@@ -1,11 +1,56 @@
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { stackScreens } from './screens/StackScreens';
+
+/*========== FUNCTIONS ==========*/
+import {getTokenFromSecureStore, removeTokenFromSecureStore} from "../services/Helpers";
+
+/*========== SCREENS ==========*/
+import ProfileScreen from "../Screens/ProfileScreen";
+import HomeScreen from "../Screens/HomeScreen";
+import {Alert} from "react-native";
 
 const Stack = createStackNavigator();
 
-function AppNavigation() {
+function AppNavigation({backToLogin}) {
+
+    const logOut = () => {
+        Alert.alert(
+            "Odjava",
+            "Da li ste sigurni da želite da se odjavite?", // Alert message
+            [
+                {
+                    text: "Otkaži",
+                    style: "default",
+                },
+                {
+                    text: "Odjavi se",
+                    onPress: () => {
+                        removeTokenFromSecureStore();
+                        backToLogin();
+                    },
+                },
+            ]
+        );
+    };
+
+
+
+
+    const stackScreens = [
+        {
+            name: 'HomeScreen',
+            component: (props) => <HomeScreen {...props} logOut={logOut} />,
+            options: { headerShown: false},
+        },
+        {
+            name: 'ProfileScreen',
+            component: ProfileScreen,
+            options: { headerShown: false},
+        },
+    ];
+
+
     return (
         <Stack.Navigator>
             {stackScreens.map((screen, index) => (

@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = () => {
+const HomeScreen = ({logOut}) => {
+
    const navigation = useNavigation();
 
     return (
@@ -10,6 +11,9 @@ const HomeScreen = () => {
             <Text className={'text-2xl mb-2'}>HomeScreen Screen</Text>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
                 <Text>Go to Profile Screen</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={logOut}>
+                <Text>LOGOUT DUGME</Text>
             </TouchableOpacity>
         </View>
     );

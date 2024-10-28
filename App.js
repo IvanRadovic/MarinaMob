@@ -3,9 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import MainNavigation from "./src/Navigation/MainNavigation";
 
 import {
-    useQuery,
-    useMutation,
-    useQueryClient,
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query'
