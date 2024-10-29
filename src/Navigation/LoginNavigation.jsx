@@ -9,7 +9,7 @@ function LoginNavigation ({ startApp }) {
 
     const loginScreens = [
         {
-            name: 'Login',
+            name: 'LoginScreen',
             component: (props) => <LoginScreen {...props} startApp={startApp} />,
             options: {
                 headerShown: false,

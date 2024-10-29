@@ -1,77 +1,107 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import {View, Text, TouchableOpacity, TextInput, Button, ActivityIndicator, ImageBackground} from 'react-native';
+
+import {Controller, useForm} from 'react-hook-form';
+
+/*========== STYLE ===========*/
+import {pLarge} from "../../Style/Components/Paddings";
+import {mbMediumBig} from "../../Style/Components/Margins";
+import {flex1, flex2} from "../../Style/Components/FlexAligments";
+
+
+/*========== HOOKS ===========*/
+import {useToast} from "../../Hooks/toastMessage";
+
+/*========== FUNCTIONS ===========*/
 import { createLogin } from "../../Api/api.functions";
+import {saveTokenToSecureStore} from "../../services/Helpers";
 
 const LoginScreen = ({ startApp }) => {
-    const navigation = useNavigation();
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    // Definisanje mutacije za logovanje
-    const loginMutation = useMutation(
-        async (userData) => {
-            const response = await createLogin(userData);
-            startApp();
-            return response.data;
+    const { register,control, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { showToast } = useToast();
+
+    const onSubmit = async (data) => {
+
+        const object={
+            username:data.username,
+            password:data.password,
+            rememberMe:false
         }
-    );
-
-    const onSubmit = (data) => {
-        loginMutation.mutate(data, {
-            onSuccess: (data) => {
-                console.log('Uspešno logovanje', data);
-            },
-            onError: (error) => {
-                // Obrada greške
-                console.error('Greška prilikom logovanja:', error);
-            },
-        });
-    };
+        console.log('object:', object)
+        try {
+            const response = await createLogin(object);
+            await saveTokenToSecureStore(response.data.token);
+            startApp();
+            showToast({ type: "success", message: "Uspješno ste prijavljeni!" })
+        } catch (error) {
+            console.error('Error creating login:', error);
+            console.log(error.response);
+            const message = JSON.parse(JSON.stringify(error.response.data)).message;
+            showToast({ type: "error", message: message });
+        }
+    }
 
     return (
-        <View className={'flex-1 justify-center items-center mt-10'}>
-            <Text className={'text-2xl mt-2'}>LoginScreen Screen</Text>
-            <View style={{ padding: 20 }}>
-                <Text>Email:</Text>
-                <TextInput
-                    placeholder="Unesite email"
-                    onChangeText={(text) => setValue('email', text)}
-                    style={{
-                        borderWidth: 1,
-                        borderColor: 'gray',
-                        padding: 10,
-                        marginBottom: 10,
-                    }}
+        <View style={{...flex1}}>
+            <View style={{...flex2}}>
+                <ImageBackground
+                    source={require('../../../assets/Images/logo.png')}
+                    style={{width: '100%', height: '100%'}}
+                    resizeMode={'contain'}
                 />
-                {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+            </View>
+            <View style={{ ...pLarge, ...flex2 }}>
+                <View>
+                    <Text>Username:</Text>
+                    <Controller
+                        control={control}
+                        name="username"
+                        rules={{ required: "Ovo polje je obavezno" }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                placeholder="Unesite email"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: 'gray',
+                                    padding: 10,
+                                }}
+                            />
+                        )}
+                    />
+                    {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+                </View>
 
-                <Text>Password:</Text>
-                <TextInput
-                    placeholder="Unesite šifru"
-                    onChangeText={(text) => setValue('password', text)}
-                    secureTextEntry
-                    style={{
-                        borderWidth: 1,
-                        borderColor: 'gray',
-                        padding: 10,
-                        marginBottom: 10,
-                    }}
-                />
-                {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
-
+               <View style={{...mbMediumBig}}>
+                   <Text>Password:</Text>
+                   <Controller
+                       control={control}
+                       name="password"
+                       rules={{ required: "Ovo polje je obavezno" }}
+                       render={({ field: { onChange, onBlur, value } }) => (
+                           <TextInput
+                               placeholder="Unesite šifru"
+                               onBlur={onBlur}
+                               onChangeText={onChange}
+                               value={value}
+                               secureTextEntry
+                               style={{
+                                   borderWidth: 1,
+                                   borderColor: 'gray',
+                                   padding: 10,
+                               }}
+                           />
+                       )}
+                   />
+                   {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
+               </View>
                 <Button
-                    title={'Uloguj se'}
+                    title={'Prijavi se'}
                     onPress={handleSubmit(onSubmit)}
-                    disabled={loginMutation.isLoading}
                 />
-
-                {loginMutation.isError && (
-                    <Text style={{ color: 'red' }}>Došlo je do greške prilikom logovanja. Pokušajte ponovo.</Text>
-                )}
-
-                {loginMutation.isLoading && <ActivityIndicator size="small" color="#0000ff" />}
             </View>
         </View>
     );
