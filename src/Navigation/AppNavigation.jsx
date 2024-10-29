@@ -3,7 +3,12 @@ import React, {useState, useEffect} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 /*========== FUNCTIONS ==========*/
-import {getTokenFromSecureStore, removeTokenFromSecureStore} from "../services/Helpers";
+import {
+    getTokenFromSecureStore,
+    removeCompanyFromSecureStore,
+    removeTokenFromSecureStore,
+    removeYearFromSecureStore
+} from "../services/Helpers";
 
 /*========== SCREENS ==========*/
 import ProfileScreen from "../Screens/ProfileScreen";
@@ -27,6 +32,8 @@ function AppNavigation({backToLogin}) {
                     text: "Odjavi se",
                     onPress: () => {
                         removeTokenFromSecureStore();
+                        removeCompanyFromSecureStore();
+                        removeYearFromSecureStore();
                         backToLogin();
                     },
                 },

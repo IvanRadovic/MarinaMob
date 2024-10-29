@@ -23,7 +23,7 @@ export const getAccount = async () => {
 export const getAdm = async () => {
     try {
         const response = await axiosInstance.get(`/adm/adm-user-preduzeca-by-login`);
-        console.log("adm/adm-user-preduzeca-by-login", response.data);
+        console.log("adm/adm-user-preduzeca-by-login", JSON.stringify(response.data, null, 2));
         return response.data;
     } catch (error) {
         throw error;

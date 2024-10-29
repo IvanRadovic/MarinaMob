@@ -30,7 +30,7 @@ export const removeTokenFromSecureStore = async () => {
 
 
 /*============ COMPANY LIST ===========*/
-export const saveCompantyToSecureStore = async (company) => {
+export const saveCompanyToSecureStore = async (company) => {
     try {
         await SecureStore.setItemAsync('company', company);
     } catch (error) {

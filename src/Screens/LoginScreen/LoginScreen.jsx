@@ -13,8 +13,8 @@ import {flex1, flex2} from "../../Style/Components/FlexAligments";
 import {useToast} from "../../Hooks/toastMessage";
 
 /*========== FUNCTIONS ===========*/
-import { createLogin } from "../../Api/api.functions";
-import {saveTokenToSecureStore} from "../../services/Helpers";
+import {createLogin, getAccount, getAdm} from "../../Api/api.functions";
+import {saveCompanyToSecureStore, saveTokenToSecureStore, saveYearToSecureStore} from "../../services/Helpers";
 
 const LoginScreen = ({ startApp }) => {
 
@@ -31,7 +31,15 @@ const LoginScreen = ({ startApp }) => {
         console.log('object:', object)
         try {
             const response = await createLogin(object);
-            await saveTokenToSecureStore(response.data.token);
+            await saveTokenToSecureStore(response.id_token);
+            await getAccount();
+            const companyAndYear = await getAdm();
+            if (companyAndYear && companyAndYear.length > 0) {
+                const lastItem = companyAndYear[companyAndYear.length - 1];
+                console.log('lastItem', lastItem)
+                await saveCompanyToSecureStore(lastItem.preduzece.id.toString());
+                await saveYearToSecureStore(lastItem.godina.toString());
+            }
             startApp();
             showToast({ type: "success", message: "Uspješno ste prijavljeni!" })
         } catch (error) {
