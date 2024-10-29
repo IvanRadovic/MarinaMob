@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+/*============== FUNCTIONS =============*/
 import {getCompanyFromSecureStore, getYearFromSecureStore} from "../../services/Helpers";
 
 const HomeScreen = ({logOut}) => {
