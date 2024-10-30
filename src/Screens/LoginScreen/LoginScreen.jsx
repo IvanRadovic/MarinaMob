@@ -1,13 +1,29 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, TextInput, Button, ActivityIndicator, ImageBackground, Image} from 'react-native';
+import {View, Text, Dimensions, TextInput, Button, ActivityIndicator, ImageBackground, Image} from 'react-native';
 
 import {Controller, useForm} from 'react-hook-form';
 
 /*========== STYLE ===========*/
 import {styles} from "./LoginScreen.style";
-import {pbLarge, phMediumSmall, phSmall, pLarge, pvMedium, pvMediumBig, pvSmall} from "../../Style/Components/Paddings";
+import {
+    pbLarge,
+    phMediumSmall,
+    phSmall,
+    pLarge,
+    pvMedium,
+    pvMediumBig,
+    pvSmall,
+    pvTiny
+} from "../../Style/Components/Paddings";
 import {mbMediumBig} from "../../Style/Components/Margins";
-import {flex1, flex2, justifyCenter} from "../../Style/Components/FlexAligments";
+import {
+    alignItemsEnd,
+    flex1,
+    flex2,
+    justifyCenter,
+    justifyEnd,
+    justifyStart, spaceAround
+} from "../../Style/Components/FlexAligments";
 
 
 /*========== HOOKS ===========*/
@@ -19,11 +35,17 @@ import {saveCompanyToSecureStore, saveTokenToSecureStore, saveYearToSecureStore}
 import {SharedShadowStyle} from "../../Style/Components/Layouts";
 import {FontSizeBiggest, fsMedium, fsMediumBig, fsMediumBiggest} from "../../Style/Components/FontAdjust";
 import {gray} from "nativewind/src/metro/picocolors";
+import {BorderRadiusGigant} from "../../Style/Components/BorderAdjust";
 
 const LoginScreen = ({ startApp }) => {
 
     const { register,control, handleSubmit, setValue, formState: { errors } } = useForm();
     const { showToast } = useToast();
+
+
+    const { width, height } = Dimensions.get('window');
+    const imageWidth = width * 0.75; // 75% of the window width
+    const imageHeight = height * 0.25; // 25% of the window height
 
     const onSubmit = async (data) => {
 
@@ -55,16 +77,22 @@ const LoginScreen = ({ startApp }) => {
     }
 
     return (
-        <View style={{...flex1, backgroundColor:'rgba(199,210,224,0.73)'}}>
-            <View style={{ ...pLarge, ...flex2, ...justifyCenter }}>
+        <ImageBackground
+            source={require('../../../assets/Images/img3.jpg')}
+            style={{...flex1, ...phMediumSmall}}
+            resizeMode={'cover'}
+        >
+            <View style={{...flex1, ...alignItemsEnd, ...justifyEnd}}>
+                <Image
+                    source={require('../../../assets/Images/logo1.png')}
+                    style={{width: imageWidth, height: imageHeight, alignSelf: 'center'}}
+                    resizeMode={'contain'}
+                />
+            </View>
+            <View style={{ ...pLarge, ...flex2, ...justifyStart }}>
                 <View style={{...SharedShadowStyle, ...pbLarge}}>
-                    <Image
-                        source={require('../../../assets/Images/logo1.png')}
-                        style={{width: 300, height: 200, alignSelf: 'center'}}
-                        resizeMode={'contain'}
-                    />
                     <View>
-                        <Text style={{...pvSmall, ...fsMedium}}>Username:</Text>
+                        <Text style={{...pvTiny, ...fsMedium}}>Username:</Text>
                         <Controller
                             control={control}
                             name="username"
@@ -84,7 +112,7 @@ const LoginScreen = ({ startApp }) => {
                     </View>
 
                     <View style={{...mbMediumBig}}>
-                        <Text style={{...pvSmall, ...fsMedium}}>Password:</Text>
+                        <Text style={{...pvTiny, ...fsMedium}}>Password:</Text>
                         <Controller
                             control={control}
                             name="password"
@@ -107,11 +135,10 @@ const LoginScreen = ({ startApp }) => {
                         title={'Prijavi se'}
                         onPress={handleSubmit(onSubmit)}
                         color={'#27368C'}
-                        borderRadius={50}
                     />
                 </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 };
 
